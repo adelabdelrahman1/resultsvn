@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>الاستعلام عن النتيجة - مدارس نيو فيجن الخاصة</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); min-height: 100vh; padding: 20px; direction: rtl; }
+    .container { max-width: 700px; margin: 0 auto; }
+    .search-card { background: white; border-radius: 30px; padding: 35px 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); margin-bottom: 20px; text-align: center; }
+    .logo-container { text-align: center; margin-bottom: 20px; }
+    .school-logo { width: 100px; height: 100px; background: linear-gradient(135deg, #ffd700, #ff8c00); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 50px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); margin-bottom: 15px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    .school-name { font-size: 1.6rem; font-weight: bold; color: #2c3e50; }
+    .school-sub { font-size: 0.8rem; color: #7f8c8d; margin-bottom: 5px; }
+    .school-year { background: linear-gradient(135deg, #2c3e50, #1a2a3a); color: white; padding: 6px 15px; border-radius: 30px; display: inline-block; font-size: 12px; margin-top: 10px; }
+    .subtitle { color: #555; margin: 25px 0 20px; font-size: 14px; border-top: 1px solid #eee; padding-top: 20px; }
+    .input-group { margin-bottom: 25px; }
+    label { display: block; margin-bottom: 10px; color: #2c3e50; font-weight: bold; font-size: 15px; }
+    .input-wrapper { position: relative; }
+    .input-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 20px; }
+    input { width: 100%; padding: 15px 50px; font-size: 18px; text-align: center; border: 2px solid #e0e0e0; border-radius: 15px; font-family: inherit; transition: all 0.3s; direction: ltr; letter-spacing: 1px; }
+    input:focus { outline: none; border-color: #ff8c00; box-shadow: 0 0 0 3px rgba(255,140,0,0.1); }
+    button { width: 100%; padding: 15px; font-size: 18px; font-weight: bold; background: linear-gradient(135deg, #2c3e50, #1a2a3a); color: white; border: none; border-radius: 15px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    button:hover { transform: translateY(-3px); background: linear-gradient(135deg, #ff8c00, #ffd700); color: #2c3e50; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+    .result-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: none; animation: slideUp 0.5s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .result-header { background: linear-gradient(135deg, #2c3e50, #1a2a3a); color: white; padding: 25px 20px; text-align: center; }
+    .result-header h2 { font-size: 1.3rem; margin-bottom: 5px; }
+    .student-info { padding: 25px; background: #f8f9fa; border-bottom: 1px solid #eee; text-align: center; }
+    .student-name { font-size: 1.4rem; font-weight: bold; color: #2c3e50; margin-bottom: 8px; }
+    .student-class { font-size: 1rem; color: #7f8c8d; margin-top: 5px; display: inline-block; background: #ecf0f1; padding: 5px 15px; border-radius: 25px; }
+    .student-id { font-size: 0.85rem; color: #95a5a6; margin-top: 10px; word-break: break-all; background: #fff; padding: 8px; border-radius: 10px; direction: ltr; }
+    .roll-number { background: linear-gradient(135deg, #ffd700, #ff8c00); padding: 8px 15px; border-radius: 30px; font-size: 0.8rem; text-align: center; margin-top: 15px; display: inline-block; color: #2c3e50; font-weight: bold; }
+    .section-title { font-weight: bold; padding: 15px 20px; font-size: 1rem; }
+    .added-title { background: #d4edda; color: #155724; border-right: 4px solid #28a745; }
+    .not-added-title { background: #fff3cd; color: #856404; border-right: 4px solid #ffc107; margin-top: 5px; }
+    .separator { text-align: center; padding: 15px; color: #ccc; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .separator-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #ccc, transparent); }
+    .subject-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; transition: background 0.2s; }
+    .subject-item:hover { background: #f8f9fa; }
+    .subject-name { font-size: 0.9rem; color: #34495e; font-weight: 500; text-align: right; flex: 2; }
+    .score-value { background: #ecf0f1; padding: 5px 18px; border-radius: 30px; font-weight: bold; font-size: 1rem; color: #2c3e50; min-width: 60px; text-align: center; }
+    .empty-score { background: #fef3c7; color: #d97706; }
+    .print-buttons { display: flex; gap: 12px; padding: 20px; background: #f8f9fa; border-top: 1px solid #eee; }
+    .print-btn { flex: 1; padding: 12px; font-size: 15px; background: #2c3e50; color: white; border: none; border-radius: 12px; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .print-btn:hover { background: #1a2a3a; transform: translateY(-2px); }
+    .print-btn.print-only { background: #27ae60; }
+    .print-btn.print-only:hover { background: #219a52; }
+    .note-box { background: #f8f9fa; padding: 12px; text-align: center; font-size: 11px; color: #7f8c8d; border-top: 1px solid #eee; }
+    .error-message { background: #f8d7da; color: #721c24; padding: 20px; border-radius: 20px; text-align: center; margin-top: 20px; animation: shake 0.5s ease; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .loading { background: #e8f4fd; color: #2c3e50; padding: 20px; border-radius: 20px; text-align: center; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .spinner { width: 20px; height: 20px; border: 3px solid #2c3e50; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .footer { text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7); font-size: 12px; line-height: 1.8; }
+    .footer a { color: #ffd700; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+    .whatsapp-btn { display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; padding: 8px 20px; border-radius: 50px; text-decoration: none; font-size: 12px; margin-top: 10px; transition: 0.3s; }
+    .whatsapp-btn:hover { transform: scale(1.05); background: #128C7E; }
+    .stats-box { background: rgba(255,255,255,0.9); padding: 10px; border-radius: 15px; margin-top: 15px; font-size: 12px; color: #2c3e50; text-align: center; }
+    
+    /* أنماط الطباعة - فقط النتيجة */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .result-card, .result-card * {
+        visibility: visible;
+      }
+      .result-card {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        margin: 0;
+        padding: 10px;
+        border-radius: 0;
+        box-shadow: none;
+        width: 100%;
+      }
+      .print-buttons, .note-box, .footer, .search-card {
+        display: none !important;
+      }
+      .student-info {
+        padding: 10px;
+      }
+      .student-name {
+        font-size: 16px;
+      }
+      .subject-item {
+        padding: 6px 10px;
+      }
+      .subject-name {
+        font-size: 11px;
+      }
+      .score-value {
+        padding: 2px 10px;
+        font-size: 11px;
+      }
+      .section-title {
+        padding: 8px 15px;
+        font-size: 12px;
+      }
+      .result-header {
+        padding: 10px;
+      }
+      .result-header h2 {
+        font-size: 14px;
+      }
+      .result-header p {
+        font-size: 10px;
+      }
+    }
+    
+    @media (max-width: 480px) { .container { padding: 0; } .search-card { padding: 25px 15px; } .student-name { font-size: 1.2rem; } .subject-item { padding: 12px 15px; } .score-value { padding: 4px 12px; font-size: 0.9rem; } .subject-name { font-size: 0.75rem; } }
+  </style>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="search-card">
+    <div class="logo-container">
+      <div class="school-logo">🏫📚</div>
+      <div class="school-name">مدارس نيو فيجن الخاصة</div>
+      <div class="school-sub">New Vision Private Schools</div>
+      <div class="school-year">🎓 نظام الاستعلام الإلكتروني للنتائج 🎓</div>
+    </div>
+    <div class="subtitle"><strong>📢 أدخل الرقم القومي لاستخراج النتيجة</strong></div>
+    <div class="input-group">
+      <label>🆔 الرقم القومي للطالب</label>
+      <div class="input-wrapper">
+        <span class="input-icon">🔍</span>
+        <input type="text" id="nationalId" placeholder="مثال: 30912012602573" autocomplete="off" dir="ltr">
+      </div>
+    </div>
+    <button id="searchBtn"><span>🔍</span> عرض النتيجة</button>
+    <div id="stats" class="stats-box">📊 نظام استعلام نتائج مدارس نيو فيجن الخاصة - يمكنك البحث بالرقم القومي</div>
+  </div>
+  <div id="resultArea"></div>
+  <div class="footer">
+    <div>👨‍💻 برمجة المهندس / عادل عبدالرحمن</div>
+    <div>📞 للتواصل تليفون واتساب: <a href="https://wa.me/201158972742" target="_blank">01158972742</a></div>
+    <div style="margin-top: 10px;">© 2026 جميع الحقوق محفوظة</div>
+  </div>
+</div>
+
+<script>
+  function loadSavedData() {
+    const students = JSON.parse(localStorage.getItem('neovision_students') || '[]');
+    const results = JSON.parse(localStorage.getItem('neovision_results') || '[]');
+    // لا نعرض إحصائيات الأعداد
+    return { students, results };
+  }
+  
+  function escapeHtml(text) {
+    if (!text) return '';
+    return String(text).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+  }
+  
+  async function searchStudent() {
+    const nationalId = document.getElementById('nationalId').value.trim();
+    const resultDiv = document.getElementById('resultArea');
+    if (!nationalId) { alert('⚠️ الرجاء إدخال الرقم القومي'); return; }
+    
+    resultDiv.innerHTML = `<div class="loading"><div class="spinner"></div><span>⏳ جاري البحث عن الرقم القومي ${nationalId}...</span></div>`;
+    
+    setTimeout(() => {
+      const { students, results } = loadSavedData();
+      if (students.length === 0) {
+        resultDiv.innerHTML = `<div class="error-message">❌ لا توجد بيانات متاحة حالياً<br><small>يرجى التواصل مع إدارة المدرسة لرفع النتائج</small></div>`;
+        return;
+      }
+      
+      const student = students.find(s => s.nationalId === nationalId);
+      if (!student) {
+        resultDiv.innerHTML = `<div class="error-message">❌ لا توجد نتائج للرقم القومي ${nationalId}<br><small>يرجى التأكد من الرقم والمحاولة مرة أخرى</small></div>`;
+        return;
+      }
+      
+      let studentResults = results.filter(r => r.student_id === student.id && !r.is_hidden);
+      studentResults.sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+      
+      const orderedSubjects = [];
+      studentResults.forEach(r => {
+        const isEmpty = r.is_empty || r.subject_grade === "—" || r.subject_grade === "";
+        orderedSubjects.push({
+          name: r.subject_name,
+          score: isEmpty ? "—" : r.subject_grade,
+          isEmpty: isEmpty
+        });
+      });
+      
+      const addedToTotal = [];
+      const notAddedToTotal = [];
+      const addedKeywords = ['المجموع الكلي', 'تحريري', 'الرياضيات', 'اللغة العربية', 'اللغة الانجليزية', 'مضاف للمجموع'];
+      
+      orderedSubjects.forEach(sub => {
+        const isAdded = addedKeywords.some(keyword => sub.name.includes(keyword));
+        if (isAdded || (!sub.isEmpty && sub.score !== "—" && sub.score !== "0" && sub.score !== "")) {
+          addedToTotal.push(sub);
+        } else {
+          notAddedToTotal.push(sub);
+        }
+      });
+      
+      let totalScore = 0;
+      addedToTotal.forEach(sub => {
+        if (!sub.isEmpty && sub.score !== "—") {
+          const num = parseFloat(sub.score);
+          if (!isNaN(num)) totalScore += num;
+        }
+      });
+      
+      const gradeNames = { 1: 'KG1', 2: 'KG2', 3: 'الصف الأول الابتدائي', 4: 'الصف الثاني الابتدائي', 5: 'الصف الثالث الابتدائي', 6: 'الصف الرابع الابتدائي', 7: 'الصف الخامس الابتدائي', 8: 'الصف السادس الابتدائي', 9: 'الصف الأول الإعدادي', 10: 'الصف الثاني الإعدادي', 11: 'الصف الثالث الإعدادي', 12: 'الصف الأول الثانوي', 13: 'الصف الثاني الثانوي', 14: 'الصف الثالث الثانوي' };
+      const className = gradeNames[student.grade_level_id] || '-';
+      
+      let addedHtml = '', notAddedHtml = '';
+      
+      addedToTotal.forEach(sub => {
+        const isEmptyClass = sub.isEmpty ? 'empty-score' : '';
+        addedHtml += `<div class="subject-item"><span class="subject-name">📖 ${escapeHtml(sub.name)}</span><span class="score-value ${isEmptyClass}">${escapeHtml(sub.score)}</span></div>`;
+      });
+      
+      notAddedToTotal.forEach(sub => {
+        notAddedHtml += `<div class="subject-item"><span class="subject-name">📘 ${escapeHtml(sub.name)}</span><span class="score-value empty-score">${escapeHtml(sub.score)}</span></div>`;
+      });
+      
+      resultDiv.innerHTML = `
+        <div class="result-card" style="display:block;">
+          <div class="result-header"><h2>نتائج مدارس نيو فيجن الخاصة</h2><p>نتيجة الفصل الدراسي الأول السنة الحالية 2026</p></div>
+          <div class="student-info">
+            <div class="student-name">${escapeHtml(student.name)}</div>
+            <div class="student-class">📚 ${escapeHtml(className)}</div>
+            <div class="student-id">🆔 ${escapeHtml(student.nationalId)}</div>
+            <div><span class="roll-number">📋 ${escapeHtml(student.seatNumber || 'غير محدد')} رقم الجلوس</span></div>
+          </div>
+          <div class="section-title added-title">📖 مواد مضاف للمجموع</div>
+          ${addedHtml || '<div class="subject-item" style="color:#999;">لا توجد مواد مضاف للمجموع</div>'}
+          ${notAddedToTotal.length > 0 ? `
+            <div class="separator"><span class="separator-line"></span><span>●</span><span class="separator-line"></span></div>
+            <div class="section-title not-added-title">⚠️ مواد غير مضاف للمجموع</div>
+            ${notAddedHtml}
+          ` : ''}
+          ${totalScore > 0 ? `
+            <div class="separator"><span class="separator-line"></span><span>💰</span><span class="separator-line"></span></div>
+            <div class="subject-item" style="background:#e6fffa; font-weight:bold;">
+              <span class="subject-name">💰 المجموع الكلي المضاف للمجموع</span>
+              <span class="score-value" style="background:#48bb78; color:white;">${totalScore}</span>
+            </div>
+          ` : ''}
+          <div class="print-buttons">
+            <button class="print-btn" onclick="printResult()">🖨️ طباعة النتيجة</button>
+            <button class="print-btn print-only" onclick="closeResult()">✖️ بحث جديد</button>
+          </div>
+          <div class="note-box">📌 هذه نتيجة خاصة بالسنة الحالية 2026 - جميع الحقوق محفوظة</div>
+        </div>
+      `;
+      resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }
+  
+  function printResult() {
+    const resultCard = document.querySelector('.result-card');
+    if (!resultCard) { alert('لا توجد نتيجة للطباعة'); return; }
+    window.print();
+  }
+  
+  function closeResult() {
+    document.getElementById('resultArea').innerHTML = '';
+    document.getElementById('nationalId').value = '';
+    document.getElementById('nationalId').focus();
+  }
+  
+  loadSavedData();
+  document.getElementById('nationalId').addEventListener('keypress', (e) => { if (e.key === 'Enter') searchStudent(); });
+  document.getElementById('searchBtn').addEventListener('click', searchStudent);
+</script>
+</body>
+</html>
